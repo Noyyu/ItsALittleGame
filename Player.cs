@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection.Metadata;
 using System.Security.AccessControl;
 using System.Text;
@@ -10,18 +11,21 @@ namespace ItsALittleGame
 {
     internal class Player
     {
+
+        public Bounds.Coordinate PlayerPosition { get; set; }
+        public Bounds.Coordinate PlayerSize { get; private set; }
+        List<List<Bounds.Coordinate>> playerBouningBox = new List<List<Bounds.Coordinate>>();
+        private Bounds.Coordinate _playerPrevPosition;
+
         private int screenTop;
         private int screenRight;
         private int screenLeft;
         private int screenBottom;
-        public int X { get; set; } = 10;
-        public int Y { get; set; } = 5;
 
-        private int prevY = 10;
-        private int prevX = 5;
         public int Health { get; set; }
         int WalkingSpeed { get; set; } = 1;
 
+        //Animation frames
         int runFrames = 6;
         int currentRunFrame;
         int climbFrames = 2;
@@ -31,22 +35,37 @@ namespace ItsALittleGame
 
         int prevSprite;
 
-        char tempSymbol = 'h';
 
         public Player()
         {
+            PlayerSize = new Bounds.Coordinate(3,6);
+            PlayerPosition = new Bounds.Coordinate(10, 50);
+            _playerPrevPosition = new Bounds.Coordinate(10,50);
 
+            for (int i = 0; i < PlayerSize.Y; i++)
+            {
+                playerBouningBox.Add(new List<Bounds.Coordinate>());
+
+                for (int j = 0; j < PlayerSize.X; j++)
+                {
+                    playerBouningBox.Last().Add(new Bounds.Coordinate(PlayerPosition.X + j, PlayerPosition.Y + j));                 
+                }
+            }
         }
 
-        public void SetPlayerScreenBounds(int top, int right, int left, int bottom)
+        public void SetPlayerBoundingBox()
         {
-            screenBottom = bottom;
-            screenRight = right;
+        }
+
+        public void SetPlayerScreenBounds(int top, int right, int left, int bottom) //This is the bounds of the borders, not the player.
+        {
+            screenBottom = bottom - 1; //Added some cheeky adjustments here to take player "fatness" into account
+            screenRight = right - 3;
             screenLeft = left;
             screenTop = top;
         }
 
-        void WriteColor(string text, ConsoleColor color)
+        void WriteColor(string text, ConsoleColor color) //Just makes it easier for me to make the leggies on the player to switch colors
         {
             Console.ForegroundColor = color;
             Console.Write(text);
@@ -55,14 +74,15 @@ namespace ItsALittleGame
 
         public void AnimatePlayer(int dirX, int dirY)
         {
-            Console.SetCursorPosition(prevX, prevY);
-            Console.Write("      ");
-            Console.SetCursorPosition(prevX, prevY + 1);
-            Console.Write("      ");
-            Console.SetCursorPosition(prevX, prevY + 2);
-            Console.Write("      ");
-            prevY = Y;
-            prevX = X;
+            //Erases old sprite
+            Console.SetCursorPosition(_playerPrevPosition.X, _playerPrevPosition.Y);      // Upper left
+            Console.Write("       ");
+            Console.SetCursorPosition(_playerPrevPosition.X, _playerPrevPosition.Y + 1);  // Middle left
+            Console.Write("       ");
+            Console.SetCursorPosition(_playerPrevPosition.X, _playerPrevPosition.Y + 2);  // Lower left
+            Console.Write("       ");
+            _playerPrevPosition.Y = PlayerPosition.Y;
+            _playerPrevPosition.X = PlayerPosition.Y;
 
             // 0 walk right
             // 1 walk left
@@ -124,13 +144,13 @@ namespace ItsALittleGame
                             // ( ._.)
                             //  /|\
                             //   |> 
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("( ._.)", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor(" /|", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" ( ._.)", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor("  /|", ConsoleColor.White);
                             WriteColor("\\", ConsoleColor.DarkGray);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor("  |", ConsoleColor.DarkGray);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("   |", ConsoleColor.DarkGray);
                             WriteColor(">", ConsoleColor.White);
                                                         
                             break;
@@ -138,65 +158,65 @@ namespace ItsALittleGame
                             // ( ._.)
                             //  /|\
                             //  />
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("( ._.)", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor(" /|", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" ( ._.)", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor("  /|", ConsoleColor.White);
                             WriteColor("\\", ConsoleColor.DarkGray);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor(" /", ConsoleColor.DarkGray);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("  /", ConsoleColor.DarkGray);
                             WriteColor(">", ConsoleColor.White);
                             break;
                         case 3:
                             // ( ._.)
                             //  /|\
                             //  /\
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("( ._.)", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor(" /|", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" ( ._.)", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor("  /|", ConsoleColor.White);
                             WriteColor("\\", ConsoleColor.DarkGray);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor(" /", ConsoleColor.DarkGray);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("  /", ConsoleColor.DarkGray);
                             WriteColor("\\", ConsoleColor.White);
                             break;
                         case 4:
                             // ( ._.)
                             //  /|\
                             //   |>
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("( ._.)", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor(" /", ConsoleColor.DarkGray);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" ( ._.)", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor("  /", ConsoleColor.DarkGray);
                             WriteColor("|\\", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor("  |", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("   |", ConsoleColor.White);
                             WriteColor(">", ConsoleColor.DarkGray);
                             break;
                         case 5:
                             // ( ._.)
                             //  /|\
                             //  />
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("( ._.)", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" ( ._.)", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
                             WriteColor(" /", ConsoleColor.DarkGray);
                             WriteColor("|\\", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor(" /", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("  /", ConsoleColor.White);
                             WriteColor(">", ConsoleColor.DarkGray);
                             break;
                         case 6:
                             // ( ._.)
                             //  /|\
                             //  /\
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("( ._.)", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor(" /", ConsoleColor.DarkGray);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" ( ._.)", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor("  /", ConsoleColor.DarkGray);
                             WriteColor("|\\", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor(" /", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("  /", ConsoleColor.White);
                             WriteColor("\\", ConsoleColor.DarkGray);
                             break;
                         
@@ -210,78 +230,78 @@ namespace ItsALittleGame
                             // (._. )
                             //   /|\
                             //   <| 
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("(._. )", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor("  /|", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" (._. )", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor("   /|", ConsoleColor.White);
                             WriteColor("\\", ConsoleColor.DarkGray);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor("  <", ConsoleColor.DarkGray);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("   <", ConsoleColor.DarkGray);
                             WriteColor("|", ConsoleColor.White);
                             break;
                         case 2:
                             // (._. )
                             //   /|\
                             //    <\
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("(._. )", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor("  /|", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" (._. )", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor("   /|", ConsoleColor.White);
                             WriteColor("\\", ConsoleColor.DarkGray);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor("   <", ConsoleColor.DarkGray);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("    <", ConsoleColor.DarkGray);
                             WriteColor("\\", ConsoleColor.White);
                             break;
                         case 3:
                             // (._. )
                             //   /|\
                             //    /\
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("(._. )", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor("  /|", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" (._. )", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor("   /|", ConsoleColor.White);
                             WriteColor("\\", ConsoleColor.DarkGray);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor("   /", ConsoleColor.DarkGray);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("    /", ConsoleColor.DarkGray);
                             WriteColor("\\", ConsoleColor.White);
                             break;
                         case 4:
                             // (._. )
                             //   /|\
                             //   <|
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("(._. )", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor("  /", ConsoleColor.DarkGray);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" (._. )", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor("   /", ConsoleColor.DarkGray);
                             WriteColor("|\\", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor("  <", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("   <", ConsoleColor.White);
                             WriteColor("|", ConsoleColor.DarkGray);
                             break;
                         case 5:
                             // (._. )
                             //   /|\
                             //    <\
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("(._. )", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor("  /", ConsoleColor.DarkGray);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" (._. )", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor("   /", ConsoleColor.DarkGray);
                             WriteColor("|\\", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor("   <", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("    <", ConsoleColor.White);
                             WriteColor("\\", ConsoleColor.DarkGray);
                             break;
                         case 6:
                             // (._. )
                             //   /|\
                             //    /\
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("(._. )", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor("  /", ConsoleColor.DarkGray);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" (._. )", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor("   /", ConsoleColor.DarkGray);
                             WriteColor("|\\", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor("   /", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("    /", ConsoleColor.White);
                             WriteColor("\\", ConsoleColor.DarkGray);
                             break;
                     }
@@ -296,24 +316,24 @@ namespace ItsALittleGame
                             // ('-')
                             //  /|^
                             //  ^ \
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("('-')", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor(" /|^", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor(" ^ \\", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" ('-')", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor("  /|^", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("  ^ \\", ConsoleColor.White);
                             break;
 
                         case 2:
                             // ('-')
                             //  ^|\
                             //  / ^
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("('-')", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor(" ^|\\", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor(" / ^", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" ('-')", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor("  ^|\\", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("  / ^", ConsoleColor.White);
                             break;
                     }
                     break;
@@ -326,36 +346,36 @@ namespace ItsALittleGame
                             // ('-')
                             //  /|\
                             //  /\
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("('-')", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor(" /|\\^", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor(" /\\", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor(" ('-')", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X,PlayerPosition.Y + 1);
+                            WriteColor("  /|\\^", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("  /\\", ConsoleColor.White);
                             break;
 
                         case 2:
-                            // (._.)
-                            //  ⁀|⁀
-                            //  ^ ^
-                            Console.SetCursorPosition(X, Y);
-                            WriteColor("(._.)", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor(" ⁀|⁀", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor(" ^ ^", ConsoleColor.White);
+                            // \(._.)/
+                            //    |
+                            //   ^ ^
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                            WriteColor("\\(._.)/", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor("   |", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor("  ^ ^", ConsoleColor.White);
                             break;
 
                         case 3:
                             // 
                             // (._.)
                             // /< >\
-                            Console.SetCursorPosition(X, Y);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
                             WriteColor("", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 1);
-                            WriteColor("(._.)", ConsoleColor.White);
-                            Console.SetCursorPosition(X, Y + 2);
-                            WriteColor("/< >\\", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                            WriteColor(" (._.)", ConsoleColor.White);
+                            Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                            WriteColor(" /< >\\", ConsoleColor.White);
                             break;
                     }
                     break;
@@ -363,12 +383,12 @@ namespace ItsALittleGame
                     // (._.)
                     //  /|\
                     //  /\
-                    Console.SetCursorPosition(X, Y);
-                    WriteColor("(._.)", ConsoleColor.White);
-                    Console.SetCursorPosition(X, Y + 1);
-                    WriteColor(" /|\\", ConsoleColor.White);
-                    Console.SetCursorPosition(X, Y + 2);
-                    WriteColor(" /\\", ConsoleColor.White);
+                    Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                    WriteColor(" (._.)", ConsoleColor.White);
+                    Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                    WriteColor("  /|\\", ConsoleColor.White);
+                    Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                    WriteColor("  /\\", ConsoleColor.White);
                     break;
 
             }
@@ -376,15 +396,14 @@ namespace ItsALittleGame
 
         public void Move(int dx, int dy)
         {
-            int newX = X + (dx * WalkingSpeed) * 2; //Multeplies the direction with the walk speed (-1 * speed) (1 * speed). Adds * 2 cuz a symbal is about twice as tall as it is wide. 
-            int newY = Y + (dy * WalkingSpeed);
+            int newX = PlayerPosition.X + (dx * WalkingSpeed) * 2; //Multeplies the direction with the walk speed (-1 * speed) (1 * speed). Adds * 2 cuz a symbol is about twice as tall as it is wide. 
+            int newY = PlayerPosition.Y + (dy * WalkingSpeed);
 
             // Check bounds
             if (newX >= screenLeft && newX < screenRight - 4 &&
                 newY >= screenTop && newY < screenBottom - 1)
             {
-                X = newX;
-                Y = newY;
+                PlayerPosition = new Bounds.Coordinate(newX, newY);
             }
         }
 

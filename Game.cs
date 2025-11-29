@@ -1,10 +1,14 @@
 ﻿using ItsALittleGame;
 using System;
 using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 internal class Game
 {
+
+
+
     // Win32 key polling
     [DllImport("user32.dll")]
     private static extern short GetAsyncKeyState(int vKey); //A function that gets raw key data. 
@@ -22,21 +26,29 @@ internal class Game
     private readonly Stopwatch clock = Stopwatch.StartNew();
     
     private Player player = new Player();
+    private PickUp bunny = new PickUp("Bunny");
     private int dirX = 0, dirY = 0;
 
-    int screenLeft = 1, screenTop = 1;
-    int screenRight, screenBottom;
+    Bounds.ScreenBounds screen;
+    //Vector2 pickupPos = new Vector2(60, 60);
+    Bounds.Coordinate pickupPos = new Bounds.Coordinate(60, 60);
 
     public Game()
     {
-        screenRight = Console.WindowWidth - 2;
-        screenBottom = Console.WindowHeight - 2;
-        player.SetPlayerScreenBounds(screenTop, screenRight, screenLeft, screenBottom);
-
-        Console.CursorVisible = false;
-        // Anpassa gärna men håll det rimligt
+        //Screen
+        screen = new Bounds.ScreenBounds(Console.WindowWidth - 10 , Console.WindowHeight - 10);
+        DrawBorder();
         Console.SetWindowSize(120, 40);
+        Console.CursorVisible = false;
         Console.SetBufferSize(120, 40);
+
+        //Player
+        player.SetPlayerScreenBounds(screen.Top, screen.Right, screen.Left, screen.Bottom);
+
+
+        //pickup
+        bunny.SetPosition(new Bounds.Coordinate(50, 20));
+        
     }
 
     public void Update()
@@ -50,30 +62,31 @@ internal class Game
 
     public void Render()
     {
-        DrawBorder();
+        
+        bunny.PrintPickup();
         player.AnimatePlayer(dirX, dirY);
-        //player.PlacePlayer();
+
     }
 
     void DrawBorder()
     {
         // Edges
-        Console.SetCursorPosition(screenLeft - 1, screenTop - 1);     Console.Write('╔'); // Upper Left
-        Console.SetCursorPosition(screenRight + 1, screenTop - 1);    Console.Write('╗'); // Upper Right
-        Console.SetCursorPosition(screenLeft -1, screenBottom + 1);   Console.Write('╚'); // Bottom Left
-        Console.SetCursorPosition(screenRight + 1, screenBottom +1);  Console.Write('╝'); // Bottom Right
+        Console.SetCursorPosition(screen.Left - 1, screen.Top - 1);     Console.Write('╔'); // Upper Left
+        Console.SetCursorPosition(screen.Right + 1, screen.Top - 1);    Console.Write('╗'); // Upper Right
+        Console.SetCursorPosition(screen.Left -1, screen.Bottom + 1);   Console.Write('╚'); // Bottom Left
+        Console.SetCursorPosition(screen.Right + 1, screen.Bottom +1);  Console.Write('╝'); // Bottom Right
 
         // top & bottom
-        for (int x = screenLeft; x <= screenRight; x++)
+        for (int x = screen.Left; x <= screen.Right; x++)
         {
-            Console.SetCursorPosition(x, screenTop - 1);    Console.Write('═');
-            Console.SetCursorPosition(x, screenBottom + 1); Console.Write('═');
+            Console.SetCursorPosition(x, screen.Top - 1);    Console.Write('═');
+            Console.SetCursorPosition(x, screen.Bottom + 1); Console.Write('═');
         }
         // sides
-        for (int y = screenTop; y <= screenBottom; y++)
+        for (int y = screen.Top; y <= screen.Bottom; y++)
         {
-            Console.SetCursorPosition(screenLeft -1, y);   Console.Write('║');
-            Console.SetCursorPosition(screenRight + 1, y); Console.Write('║');
+            Console.SetCursorPosition(screen.Left -1, y);   Console.Write('║');
+            Console.SetCursorPosition(screen.Right + 1, y); Console.Write('║');
         }
     }
 
