@@ -20,7 +20,7 @@ internal class Game
 
     //Timing management
     private int timeSinceLastUpdateMs = 0;                   // Actual time since last update
-    private const int preferedTimeSinceLastUpdateMs = 60;    // Preffered time we want in between updates
+    private const int preferredTimeSinceLastUpdateMs = 60;    // Preferred time we want in between updates
     private long loopRunTimeMs = 0;                          // Used to calculate time in between updates. 
 
     private readonly Stopwatch clock = Stopwatch.StartNew();
@@ -30,16 +30,15 @@ internal class Game
     private int dirX = 0, dirY = 0;
 
     Bounds.ScreenBounds screen;
-    //Vector2 pickupPos = new Vector2(60, 60);
-    Bounds.Coordinate pickupPos = new Bounds.Coordinate(60, 60);
+    PositionPropertie pickupPos = new PositionPropertie(60, 60);
 
     public Game()
     {
         //Screen
         screen = new Bounds.ScreenBounds(Console.WindowWidth - 10 , Console.WindowHeight - 10);
         DrawBorder();
-        Console.SetWindowSize(120, 40);
         Console.CursorVisible = false;
+        Console.SetWindowSize(120, 40);
         Console.SetBufferSize(120, 40);
 
         //Player
@@ -47,7 +46,7 @@ internal class Game
 
 
         //pickup
-        bunny.SetPosition(new Bounds.Coordinate(50, 20));
+        bunny.SetPosition(new PositionPropertie(10, 45));//106, 18
         
     }
 
@@ -63,8 +62,8 @@ internal class Game
     public void Render()
     {
         
-        bunny.PrintPickup();
         player.AnimatePlayer(dirX, dirY);
+        bunny.PrintPickup();
 
     }
 
@@ -99,7 +98,7 @@ internal class Game
 
     private void UpdatePlayerPosition()
     {
-        if ((dirX != 0 || dirY != 0) && timeSinceLastUpdateMs >= preferedTimeSinceLastUpdateMs) //If we have registered a direction AND if its been at least a prefered amount of time since the last update. 
+        if ((dirX != 0 || dirY != 0) && timeSinceLastUpdateMs >= preferredTimeSinceLastUpdateMs) //If we have registered a direction AND if its been at least a prefered amount of time since the last update. 
         {
             player.Move(dirX, dirY);
             timeSinceLastUpdateMs = 0; //Resets the timer

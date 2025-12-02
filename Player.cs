@@ -12,10 +12,10 @@ namespace ItsALittleGame
     internal class Player
     {
 
-        public Bounds.Coordinate PlayerPosition { get; set; }
-        public Bounds.Coordinate PlayerSize { get; private set; }
-        List<List<Bounds.Coordinate>> playerBouningBox = new List<List<Bounds.Coordinate>>();
-        private Bounds.Coordinate _playerPrevPosition;
+        public PositionPropertie PlayerPosition { get; set; }
+        public PositionPropertie PlayerSize { get; private set; }
+        List<List<PositionPropertie>> playerBouningBox = new List<List<PositionPropertie>>();
+        private PositionPropertie _playerPrevPosition;
 
         private int screenTop;
         private int screenRight;
@@ -38,17 +38,17 @@ namespace ItsALittleGame
 
         public Player()
         {
-            PlayerSize = new Bounds.Coordinate(3,6);
-            PlayerPosition = new Bounds.Coordinate(10, 10);
-            _playerPrevPosition = new Bounds.Coordinate(10,10);
+            PlayerSize = new PositionPropertie(3,6);
+            PlayerPosition = new PositionPropertie(10, 10);
+            _playerPrevPosition = new PositionPropertie(10,10);
 
             for (int i = 0; i < PlayerSize.Y; i++)
             {
-                playerBouningBox.Add(new List<Bounds.Coordinate>());
+                playerBouningBox.Add(new List<PositionPropertie>());
 
                 for (int j = 0; j < PlayerSize.X; j++)
                 {
-                    playerBouningBox.Last().Add(new Bounds.Coordinate(PlayerPosition.X + j, PlayerPosition.Y + j));                 
+                    playerBouningBox.Last().Add(new PositionPropertie(PlayerPosition.X + j, PlayerPosition.Y + j));                 
                 }
             }
         }
@@ -231,12 +231,12 @@ namespace ItsALittleGame
                             //   /|\
                             //   <| 
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
-                            WriteColor(" (._. )", ConsoleColor.White);
+                            WriteColor("(._. )", ConsoleColor.White);
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
-                            WriteColor("   /|", ConsoleColor.White);
+                            WriteColor("  /|", ConsoleColor.White);
                             WriteColor("\\", ConsoleColor.DarkGray);
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
-                            WriteColor("   <", ConsoleColor.DarkGray);
+                            WriteColor("  <", ConsoleColor.DarkGray);
                             WriteColor("|", ConsoleColor.White);
                             break;
                         case 2:
@@ -244,12 +244,12 @@ namespace ItsALittleGame
                             //   /|\
                             //    <\
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
-                            WriteColor(" (._. )", ConsoleColor.White);
+                            WriteColor("(._. )", ConsoleColor.White);
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
-                            WriteColor("   /|", ConsoleColor.White);
+                            WriteColor("  /|", ConsoleColor.White);
                             WriteColor("\\", ConsoleColor.DarkGray);
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
-                            WriteColor("    <", ConsoleColor.DarkGray);
+                            WriteColor("   <", ConsoleColor.DarkGray);
                             WriteColor("\\", ConsoleColor.White);
                             break;
                         case 3:
@@ -257,12 +257,12 @@ namespace ItsALittleGame
                             //   /|\
                             //    /\
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
-                            WriteColor(" (._. )", ConsoleColor.White);
+                            WriteColor("(._. )", ConsoleColor.White);
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
-                            WriteColor("   /|", ConsoleColor.White);
+                            WriteColor("  /|", ConsoleColor.White);
                             WriteColor("\\", ConsoleColor.DarkGray);
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
-                            WriteColor("    /", ConsoleColor.DarkGray);
+                            WriteColor("   /", ConsoleColor.DarkGray);
                             WriteColor("\\", ConsoleColor.White);
                             break;
                         case 4:
@@ -270,12 +270,12 @@ namespace ItsALittleGame
                             //   /|\
                             //   <|
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
-                            WriteColor(" (._. )", ConsoleColor.White);
+                            WriteColor("(._. )", ConsoleColor.White);
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
-                            WriteColor("   /", ConsoleColor.DarkGray);
+                            WriteColor("  /", ConsoleColor.DarkGray);
                             WriteColor("|\\", ConsoleColor.White);
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
-                            WriteColor("   <", ConsoleColor.White);
+                            WriteColor("  <", ConsoleColor.White);
                             WriteColor("|", ConsoleColor.DarkGray);
                             break;
                         case 5:
@@ -283,12 +283,12 @@ namespace ItsALittleGame
                             //   /|\
                             //    <\
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
-                            WriteColor(" (._. )", ConsoleColor.White);
+                            WriteColor("(._. )", ConsoleColor.White);
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
-                            WriteColor("   /", ConsoleColor.DarkGray);
+                            WriteColor("  /", ConsoleColor.DarkGray);
                             WriteColor("|\\", ConsoleColor.White);
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
-                            WriteColor("    <", ConsoleColor.White);
+                            WriteColor("   <", ConsoleColor.White);
                             WriteColor("\\", ConsoleColor.DarkGray);
                             break;
                         case 6:
@@ -296,12 +296,12 @@ namespace ItsALittleGame
                             //   /|\
                             //    /\
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
-                            WriteColor(" (._. )", ConsoleColor.White);
+                            WriteColor("(._. )", ConsoleColor.White);
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
-                            WriteColor("   /", ConsoleColor.DarkGray);
+                            WriteColor("  /", ConsoleColor.DarkGray);
                             WriteColor("|\\", ConsoleColor.White);
                             Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
-                            WriteColor("    /", ConsoleColor.White);
+                            WriteColor("   /", ConsoleColor.White);
                             WriteColor("\\", ConsoleColor.DarkGray);
                             break;
                     }
@@ -403,7 +403,7 @@ namespace ItsALittleGame
             if (newX >= screenLeft && newX < screenRight - 4 &&
                 newY >= screenTop && newY < screenBottom - 1)
             {
-                PlayerPosition = new Bounds.Coordinate(newX, newY);
+                PlayerPosition = new PositionPropertie(newX, newY);
             }
         }
 

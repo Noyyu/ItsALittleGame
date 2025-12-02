@@ -25,31 +25,22 @@ namespace ItsALittleGame
             return false;
         }
 
-        static public List<List<Bounds.Coordinate>> CreateBoundingBox(int X, int Y)
+        static public List<List<PositionPropertie>> CreateBoundingBox(int X, int Y)
         {
-            List<List<Bounds.Coordinate>> boundingBox = new List<List<Bounds.Coordinate>>();
+            List<List<PositionPropertie>> boundingBox = new List<List<PositionPropertie>>();
 
             for (int i = 0; i < Y; i++)
             {
-                boundingBox.Add(new List<Coordinate>());
+                boundingBox.Add(new List<PositionPropertie>());
 
                 for (int j = 0; j < X; j++)
                 {
-                    boundingBox.Last().Add(new Coordinate(X + j, Y + j));
+                    boundingBox.Last().Add(new PositionPropertie(X + j, Y + j));
                 }
             }
             return boundingBox;
         }
-        public struct Coordinate
-        {
-            public int X { get; set; }
-            public int Y { get; set; }
-            public Coordinate(int x = 0, int y = 0)
-            {
-                X = x;
-                Y = y;
-            }
-        }
+
 
         public struct ScreenBounds
         {

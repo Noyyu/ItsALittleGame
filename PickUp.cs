@@ -11,8 +11,8 @@ namespace ItsALittleGame
     internal class PickUp
     {
         private string PickUpType { get; set; }
-        public Bounds.Coordinate PickUpPosition { get; private set; }
-        List<List<Bounds.Coordinate>> _pickUpBoundingBox = new List<List<Bounds.Coordinate>>();
+        public PositionPropertie PickUpPosition { get; private set; }
+        public List<List<PositionPropertie>> _pickUpBoundingBox = new List<List<PositionPropertie>>();
 
         public PickUp(string pickUpType)
         {
@@ -20,18 +20,26 @@ namespace ItsALittleGame
             {
                 case "Bunny":
                     _pickUpBoundingBox = Bounds.CreateBoundingBox(5, 3);
+                    PickUpType = "Bunny";
                     break;
                 case "Mouse":
                     _pickUpBoundingBox = Bounds.CreateBoundingBox(3, 1);
+                    PickUpType = "Mouse";
                     break;
                 default:
                     break;
             }
         }
 
-        public void SetPosition(Bounds.Coordinate position)
+        public void SetPosition(PositionPropertie position)
         {
             PickUpPosition = position;
+
+            PickUpPosition = new PositionPropertie()
+            {
+                X = Math.Clamp(position.X, 1, 106),
+                Y = Math.Clamp(position.Y, 1, 18)
+            };
         }
         public void SetPickUpType(string type)
         {
@@ -42,16 +50,16 @@ namespace ItsALittleGame
             switch (PickUpType)
             {
                 case "Mouse":
-                    Console.SetCursorPosition((int)PickUpPosition.X, (int)PickUpPosition.Y);
+                    Console.SetCursorPosition(PickUpPosition.X, PickUpPosition.Y);
                     Console.WriteLine("ᘛ⁐̤ᕐᐷ");
                     break;
-                case "Bunny":
 
-                    Console.SetCursorPosition((int)PickUpPosition.X, (int)PickUpPosition.Y);
+                case "Bunny":
+                    Console.SetCursorPosition(PickUpPosition.X, PickUpPosition.Y);
                     Console.WriteLine("(\\/)");
-                    Console.SetCursorPosition((int)PickUpPosition.X, (int)PickUpPosition.Y + 1);
+                    Console.SetCursorPosition(PickUpPosition.X, PickUpPosition.Y + 1);
                     Console.WriteLine("(._.)");
-                    Console.SetCursorPosition((int)PickUpPosition.X, (int)PickUpPosition.Y + 2);
+                    Console.SetCursorPosition(PickUpPosition.X, PickUpPosition.Y + 2);
                     Console.WriteLine("/>❤️");
                     break;
                 default:
