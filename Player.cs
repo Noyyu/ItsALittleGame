@@ -39,8 +39,8 @@ namespace ItsALittleGame
         public Player()
         {
             PlayerSize = new Bounds.Coordinate(3,6);
-            PlayerPosition = new Bounds.Coordinate(10, 50);
-            _playerPrevPosition = new Bounds.Coordinate(10,50);
+            PlayerPosition = new Bounds.Coordinate(10, 10);
+            _playerPrevPosition = new Bounds.Coordinate(10,10);
 
             for (int i = 0; i < PlayerSize.Y; i++)
             {
@@ -59,8 +59,8 @@ namespace ItsALittleGame
 
         public void SetPlayerScreenBounds(int top, int right, int left, int bottom) //This is the bounds of the borders, not the player.
         {
-            screenBottom = bottom - 1; //Added some cheeky adjustments here to take player "fatness" into account
-            screenRight = right - 3;
+            screenBottom = bottom; //Added some cheeky adjustments here to take player "fatness" into account
+            screenRight = right;
             screenLeft = left;
             screenTop = top;
         }
@@ -82,7 +82,7 @@ namespace ItsALittleGame
             Console.SetCursorPosition(_playerPrevPosition.X, _playerPrevPosition.Y + 2);  // Lower left
             Console.Write("       ");
             _playerPrevPosition.Y = PlayerPosition.Y;
-            _playerPrevPosition.X = PlayerPosition.Y;
+            _playerPrevPosition.X = PlayerPosition.X;
 
             // 0 walk right
             // 1 walk left
