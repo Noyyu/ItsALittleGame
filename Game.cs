@@ -30,7 +30,7 @@ internal class Game
     private int dirX = 0, dirY = 0;
 
     Bounds.ScreenBounds screen;
-    PositionPropertie pickupPos = new PositionPropertie(60, 60);
+    Coordinate pickupPos = new Coordinate(60, 60);
 
     public Game()
     {
@@ -46,7 +46,7 @@ internal class Game
 
 
         //pickup
-        bunny.SetPosition(new PositionPropertie(10, 45));//106, 18
+        bunny.SetPosition(new Coordinate(10, 45));//106, 18
         
     }
 
@@ -55,6 +55,10 @@ internal class Game
 
         GetPlayerDirection();
         CalculateTimeSinceLastUpdate();
+        if (Bounds.CheckIntersection(player.BoundingBox, bunny.BoundingBox))
+        {
+            Console.WriteLine("AAAAA");
+        }
         UpdatePlayerPosition();
 
     }

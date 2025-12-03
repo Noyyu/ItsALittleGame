@@ -10,32 +10,32 @@ namespace ItsALittleGame
 {
     static public class Bounds
     {
-        public static bool CheckIntersection(List<List<Vector2>> boundingboxOne, List<List<Vector2>> boundingboxTwo)
+        public static bool CheckIntersection(List<List<Coordinate>> boundingboxOne, List<List<Coordinate>> boundingboxTwo)
         {
-            foreach (var coordinate in boundingboxOne)
-            {
-                if (boundingboxTwo.Contains(coordinate))
-                {
-                    return true; 
-                }
-            }
+            //foreach (var coordinate in boundingboxOne)
+            //{
+            //    if (boundingboxTwo.Contains(coordinate))
+            //    {
+            //        return true; 
+            //    }
+            //}
 
-            //bool hasMatch = boundingboxOne.Any(v => boundingboxTwo.Contains(v)); //Apparently the same thing but better :(
+            bool hasMatch = boundingboxOne.Any(v => boundingboxTwo.Contains(v)); //Apparently the same thing but better :(
 
             return false;
         }
 
-        static public List<List<PositionPropertie>> CreateBoundingBox(int X, int Y)
+        static public List<List<Coordinate>> CreateBoundingBox(int X, int Y)
         {
-            List<List<PositionPropertie>> boundingBox = new List<List<PositionPropertie>>();
+            List<List<Coordinate>> boundingBox = new List<List<Coordinate>>();
 
             for (int i = 0; i < Y; i++)
             {
-                boundingBox.Add(new List<PositionPropertie>());
+                boundingBox.Add(new List<Coordinate>());
 
                 for (int j = 0; j < X; j++)
                 {
-                    boundingBox.Last().Add(new PositionPropertie(X + j, Y + j));
+                    boundingBox.Last().Add(new Coordinate(X + j, Y + i));
                 }
             }
             return boundingBox;

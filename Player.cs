@@ -12,10 +12,10 @@ namespace ItsALittleGame
     internal class Player
     {
 
-        public PositionPropertie PlayerPosition { get; set; }
-        public PositionPropertie PlayerSize { get; private set; }
-        List<List<PositionPropertie>> playerBouningBox = new List<List<PositionPropertie>>();
-        private PositionPropertie _playerPrevPosition;
+        public Coordinate PlayerPosition { get; set; }
+        public Coordinate PlayerSize { get; private set; }
+        public List<List<Coordinate>> BoundingBox = new List<List<Coordinate>>();
+        private Coordinate _playerPrevPosition;
 
         private int screenTop;
         private int screenRight;
@@ -38,19 +38,12 @@ namespace ItsALittleGame
 
         public Player()
         {
-            PlayerSize = new PositionPropertie(3,6);
-            PlayerPosition = new PositionPropertie(10, 10);
-            _playerPrevPosition = new PositionPropertie(10,10);
+            PlayerSize = new Coordinate(3,6);
+            PlayerPosition = new Coordinate(10, 10);
+            _playerPrevPosition = new Coordinate(10,10);
 
-            for (int i = 0; i < PlayerSize.Y; i++)
-            {
-                playerBouningBox.Add(new List<PositionPropertie>());
+            BoundingBox = Bounds.CreateBoundingBox(6, 3);
 
-                for (int j = 0; j < PlayerSize.X; j++)
-                {
-                    playerBouningBox.Last().Add(new PositionPropertie(PlayerPosition.X + j, PlayerPosition.Y + j));                 
-                }
-            }
         }
 
         public void SetPlayerBoundingBox()
@@ -75,6 +68,16 @@ namespace ItsALittleGame
         public void AnimatePlayer(int dirX, int dirY)
         {
             //Erases old sprite
+            if (PlayerPosition.Y == _playerPrevPosition.Y && PlayerPosition.X == _playerPrevPosition.X)
+            {
+                Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y);
+                WriteColor(" (._.)  ", ConsoleColor.White);
+                Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 1);
+                WriteColor("  /|\\  ", ConsoleColor.White);
+                Console.SetCursorPosition(PlayerPosition.X, PlayerPosition.Y + 2);
+                WriteColor("  /\\  ", ConsoleColor.White);
+                return;
+            }
             Console.SetCursorPosition(_playerPrevPosition.X, _playerPrevPosition.Y);      // Upper left
             Console.Write("       ");
             Console.SetCursorPosition(_playerPrevPosition.X, _playerPrevPosition.Y + 1);  // Middle left
@@ -403,7 +406,7 @@ namespace ItsALittleGame
             if (newX >= screenLeft && newX < screenRight - 4 &&
                 newY >= screenTop && newY < screenBottom - 1)
             {
-                PlayerPosition = new PositionPropertie(newX, newY);
+                PlayerPosition = new Coordinate(newX, newY);
             }
         }
 

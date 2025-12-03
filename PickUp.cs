@@ -11,19 +11,19 @@ namespace ItsALittleGame
     internal class PickUp
     {
         private string PickUpType { get; set; }
-        public PositionPropertie PickUpPosition { get; private set; }
-        public List<List<PositionPropertie>> _pickUpBoundingBox = new List<List<PositionPropertie>>();
+        public Coordinate PickUpPosition { get; private set; }
+        public List<List<Coordinate>> BoundingBox = new List<List<Coordinate>>();
 
         public PickUp(string pickUpType)
         {
             switch (pickUpType)
             {
                 case "Bunny":
-                    _pickUpBoundingBox = Bounds.CreateBoundingBox(5, 3);
+                    BoundingBox = Bounds.CreateBoundingBox(5, 3);
                     PickUpType = "Bunny";
                     break;
                 case "Mouse":
-                    _pickUpBoundingBox = Bounds.CreateBoundingBox(3, 1);
+                    BoundingBox = Bounds.CreateBoundingBox(3, 1);
                     PickUpType = "Mouse";
                     break;
                 default:
@@ -31,11 +31,11 @@ namespace ItsALittleGame
             }
         }
 
-        public void SetPosition(PositionPropertie position)
+        public void SetPosition(Coordinate position)
         {
             PickUpPosition = position;
 
-            PickUpPosition = new PositionPropertie()
+            PickUpPosition = new Coordinate()
             {
                 X = Math.Clamp(position.X, 1, 106),
                 Y = Math.Clamp(position.Y, 1, 18)

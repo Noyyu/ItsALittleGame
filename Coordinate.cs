@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ItsALittleGame
 {
-    public class PositionPropertie
+    public class Coordinate
     {
         public int X { get; set; }
         public int Y { get; set; }
-        public PositionPropertie(int x = 0, int y = 0)
+        public Coordinate(int x = 0, int y = 0)
         {
             X = x;
             Y = y;
